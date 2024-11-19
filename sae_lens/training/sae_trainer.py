@@ -259,6 +259,7 @@ class SAETrainer:
             sae.remove_gradient_parallel_to_decoder_directions()
 
         self.optimizer.zero_grad()
+        self.lr_scheduler.step()
         self.coefficient_scheduler.step()
 
         return train_step_output
