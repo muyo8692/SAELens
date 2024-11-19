@@ -631,14 +631,17 @@ class TrainingSAE(SAE):
             (d_sae, d_in) shape
         """
         assert self.W_dec.grad is not None  # keep pyright happy
+        
+        # Normalize decoder weights first
+        W_dec_normalized = self.W_dec.data / (torch.norm(self.W_dec.data, dim=1, keepdim=True) + 1e-6)
 
         parallel_component = einops.einsum(
             self.W_dec.grad,
-            self.W_dec.data,
+            W_dec_normalized,
             "d_sae d_in, d_sae d_in -> d_sae",
         )
         self.W_dec.grad -= einops.einsum(
             parallel_component,
-            self.W_dec.data,
+            W_dec_normalized,
             "d_sae, d_sae d_in -> d_sae d_in",
         )
