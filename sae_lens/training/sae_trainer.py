@@ -266,7 +266,7 @@ class SAETrainer:
 
     @torch.no_grad()
     def _log_train_step(self, step_output: TrainStepOutput):
-        if (self.n_training_steps + 1) % self.cfg.wandb_log_frequency == 0:
+        if (self.n_training_steps + 1) % self.cfg.wandb_log_frequency == 0 or self.n_training_steps == 0:
             wandb.log(
                 self._build_train_step_log_dict(
                     output=step_output,
